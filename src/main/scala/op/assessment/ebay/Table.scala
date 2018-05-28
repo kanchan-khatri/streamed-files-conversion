@@ -17,7 +17,7 @@ trait HtmlTable extends Table {
       |   <td>${record.address}</td>
       |   <td>${record.postcode}</td>
       |   <td>${record.phone}</td>
-      |   <td>${record.limit}0</td>
+      |   <td>${record.limit}</td>
       |   <td>${record.birthday}</td>
       | </tr>
     """.stripMargin
