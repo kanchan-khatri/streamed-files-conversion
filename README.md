@@ -29,7 +29,7 @@ Copyright (C) 2001 - 2018 by Marktplaats BV an Ebay company. All rights reserved
 
 #Solution
 
-1. We can process large inpiuts thanks to `fs2` streams and `cats effects`
+1. We can process large inputs thanks to `fs2` streams and `cats effects`
 2. Invalid inputs will be ignored 
 3. Program is able to process different several sources at once (both `CSV` and `PRN`)
 
