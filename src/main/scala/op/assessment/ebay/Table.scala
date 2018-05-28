@@ -11,14 +11,14 @@ trait Table {
 trait HtmlTable extends Table {
 
   def tableRow(record: Record): String =
-    """
+    s"""
       | <tr>
-      |   <td>John Doe111</td>
-      |   <td>NY</td>
-      |   <td>1111</td>
-      |   <td>06-28938945</td>
-      |   <td>$100</td>
-      |   <td>ok</td>
+      |   <td>${record.name}</td>
+      |   <td>${record.address}</td>
+      |   <td>${record.postcode}</td>
+      |   <td>${record.phone}</td>
+      |   <td>${record.limit}0</td>
+      |   <td>${record.birthday}</td>
       | </tr>
     """.stripMargin
 
