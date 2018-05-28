@@ -45,7 +45,6 @@ run <path to source1> [<path to source2> ...[<path to sourceN>]] <path to result
 
 ```bash
 sbt:betest> run Workbook2.csv Workbook2.prn report.html
-
 ```
 
 Please check `report.html` for result.
