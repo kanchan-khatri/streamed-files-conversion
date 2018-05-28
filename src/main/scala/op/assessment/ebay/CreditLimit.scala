@@ -11,50 +11,25 @@ object CreditLimit {
       birthday: String
     )
 
+  object RowType {
+
+    def apply(path: String): RowType = path match {
+      case csv if csv.endsWith(".csv") => CsvRow
+      case prn if prn.endsWith(".prn") => PrnRow
+      case _ => IllegalRow
+    }
+  }
+
   sealed trait RowType
   case object CsvRow extends RowType
   case object PrnRow extends RowType
+  case object IllegalRow extends RowType
 
   type RowParse = String => Option[Record]
 
-  def rowParse(rt: RowType): RowParse = {
-    s => Some(Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21"))
+  def rowParse(rt: RowType): RowParse = rt match {
+    case CsvRow => s => Some(Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21"))
+    case PrnRow => s => Some(Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21"))
+    case IllegalRow => s => None
   }
-
-  def htmlTableRow(record: Record): String =
-    """
-      | <tr>
-      |   <td>John Doe111</td>
-      |   <td>NY</td>
-      |   <td>1111</td>
-      |   <td>06-28938945</td>
-      |   <td>$100</td>
-      |   <td>ok</td>
-      | </tr>
-    """.stripMargin
-
-  val htmlHeader: String =
-    """
-      |<html>
-      |<body>
-      |<table style="width:100%">
-      |  <tr>
-      |    <th>Name</th>
-      |    <th>Address</th>
-      |    <th>Postcode</th>
-      |    <th>Phone</th>
-      |    <th>Credit Limit</th>
-      |    <th>Birthday</th>
-      |  </tr>
-      |
-   """.stripMargin
-
-  val htmlFooter: String =
-    """
-      |
-      |</table>
-      |
-      |</body>
-      |</html>
-    """.stripMargin
 }
