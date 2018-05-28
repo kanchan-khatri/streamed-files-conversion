@@ -34,4 +34,29 @@ class CreditLimitTest extends FunSuite {
         """"***sadfvdfv!!!"""
       } === None)
   }
+
+  test("RrnRow") {
+    assert(
+      rowParse(RowType("input.prn")) {
+        """Johnson, John	Voorstraat 32		3122gg		020 3849381		1000000	19870101"""
+      } === Some(
+        Record(
+          name = "Johnson, John",
+          address = "Voorstraat 32",
+          postcode = "3122gg",
+          phone = "020 3849381",
+          limit = "1000000",
+          birthday = "19870101")))
+
+
+    assert(
+      rowParse(RowType("input.prn")) {
+				"""Johnson, John	Voorstraat 32		020 3849381		1000000	19870101"""
+      } === None)
+
+    assert(
+      rowParse(RowType("input.prn")) {
+        """"***sadfvdfv!!!"""
+      } === None)
+  }
 }

@@ -33,13 +33,13 @@ object CreditLimit {
   type RowParse = String => Option[Record]
 
   def rowParse(rt: RowType): RowParse = rt match {
-    case CsvRow => parseCsv
-    case PrnRow => s => Some(Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21"))
+    case CsvRow => parseCsv(csvParser)
+    case PrnRow => parseCsv(tsvParser)
     case IllegalRow => s => None
   }
 
-  private def parseCsv(row: String): Option[Record] = {
-    csvParser.parseLine(row).filter(_.size == 6) map {
+  private def parseCsv(parser: CSVParser)(row: String): Option[Record] = {
+    parser.parseLine(row).map(_.filter(_.nonEmpty)).filter(_.size == 6) map {
       line => {
         val fields = line.toVector
         Record(fields(0), fields(1), fields(2), fields(3), fields(4), fields(5))

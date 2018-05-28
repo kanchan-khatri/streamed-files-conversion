@@ -1,6 +1,6 @@
 package op.assessment.ebay
 
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import cats.effect.Sync
 import fs2.{Stream, io, text}
 import op.assessment.ebay.CreditLimit._
@@ -8,9 +8,9 @@ import scala.language.higherKinds
 
 trait TablesConversion  extends Table {
 
-  def tablePath: String
-
-  def converter[F[_]](sources :Seq[String])(implicit F: Sync[F]): F[Unit] = {
+  def converter[F[_]](
+			sources :Seq[String],
+			out: Path)(implicit F: Sync[F]): F[Unit] = {
 
     val header: Stream[F, String] =
       Stream.emit(tableHeader).intersperse("\n")
@@ -37,9 +37,7 @@ trait TablesConversion  extends Table {
 
     (header ++ tables ++ footer)
       .through(text.utf8Encode)
-      .through(io.file.writeAll(
-        Paths.get(tablePath)
-      ))
+      .through(io.file.writeAll(out))
       .compile.drain
   }
 }
