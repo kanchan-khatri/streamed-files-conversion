@@ -35,7 +35,7 @@ Copyright (C) 2001 - 2018 by Marktplaats BV an Ebay company. All rights reserved
 
 **Run**
 
-I sbt shell
+In sbt shell
 
 ```bash
 run <path to source1> [<path to source2> ...[<path to sourceN>]] <path to result>
