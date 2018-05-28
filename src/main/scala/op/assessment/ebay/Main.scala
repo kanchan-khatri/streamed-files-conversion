@@ -11,32 +11,41 @@ object Main extends App {
   def rowType(path: String): RowType = CsvRow
 
   val input = "Workbook2.csv"
-  val csvParse: RowParse = rowParse(rowType(input))
 
-  def converter[F[_]](implicit F: Sync[F]): F[Unit] = {
+  def converter[F[_]](sources :Seq[String])(implicit F: Sync[F]): F[Unit] = {
 
     val header: Stream[F, String] =
       Stream.emit(htmlHeader).intersperse("\n")
 
-    val table: Stream[F, String] =
-      io.file.readAll[F](Paths.get(input), chunkSize = 4096)
+    def table(source: String): Stream[F, String] = {
+      val parse = rowParse(rowType(source))
+      io.file.readAll[F](Paths.get(source), chunkSize = 4096)
         .through(text.utf8Decode)
         .through(text.lines)
-        .map(csvParse andThen htmlTableRow)
+        .tail
+        .flatMap(s => Stream(parse(s)).collect {
+          case Some(row) => row
+        })
+        .map(htmlTableRow)
         .intersperse("\n")
+    }
+
+    val tables = sources.foldLeft[Stream[F, String]](Stream.empty) {
+        (acc, source) => acc ++ table(source)
+      }
 
     val footer: Stream[F, String] =
       Stream.emit(htmlFooter).intersperse("\n")
 
-    (header ++ table ++ footer)
+    (header ++ tables ++ footer)
       .through(text.utf8Encode)
       .through(io.file.writeAll(
-        Paths.get("report.html")
-      ))
+          Paths.get("report.html")
+        ))
       .compile.drain
   }
 
-  converter[IO].unsafeRunCancelable {
+  converter[IO](List(input)).unsafeRunCancelable {
     case Left(th) => th.printStackTrace()
     case _ => ()
   }

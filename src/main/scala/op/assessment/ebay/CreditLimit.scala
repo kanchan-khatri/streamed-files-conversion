@@ -15,10 +15,10 @@ object CreditLimit {
   case object CsvRow extends RowType
   case object PrnRow extends RowType
 
-  type RowParse = String => Record
+  type RowParse = String => Option[Record]
 
   def rowParse(rt: RowType): RowParse = {
-    s => Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21")
+    s => Some(Record("John Doe", "NY", "1111", " 06-28938945", "100", "1983/03/21"))
   }
 
   def htmlTableRow(record: Record): String =
