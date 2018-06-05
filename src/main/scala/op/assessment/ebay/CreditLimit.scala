@@ -4,6 +4,31 @@ object CreditLimit {
 
   import com.github.tototoshi.csv._
 
+	trait FormatType
+	trait CsvType extends FormatType
+	trait TsvType extends FormatType
+
+  trait RowFormat[F <: FormatType] {
+		def parser: CSVParser
+		def format(row: String): Option[List[String]] = parser.parseLine(row)
+	}
+
+	object RowFormat {
+
+		def apply[F <: FormatType : RowFormat]: RowFormat[F] = {
+			implicitly[RowFormat[F]]
+		}
+
+		implicit object csvFormat extends RowFormat[CsvType] {
+			override val parser: CSVParser = new CSVParser(new DefaultCSVFormat {})
+		}
+
+		implicit object tsvFormat extends RowFormat[TsvType] {
+			override val parser: CSVParser = new CSVParser(new TSVFormat {})
+		}
+	}
+
+
   val csvParser = new CSVParser(new DefaultCSVFormat {})
   val tsvParser = new CSVParser(new TSVFormat {})
 
@@ -33,17 +58,26 @@ object CreditLimit {
   type RowParse = String => Option[Record]
 
   def rowParse(rt: RowType): RowParse = rt match {
-    case CsvRow => parseCsv(csvParser)
-    case PrnRow => parseCsv(tsvParser)
-    case IllegalRow => s => None
+    case CsvRow => parse[CsvType]
+    case PrnRow => parse[TsvType]
+    case IllegalRow => _ => None
   }
 
-  private def parseCsv(parser: CSVParser)(row: String): Option[Record] = {
-    parser.parseLine(row).map(_.filter(_.nonEmpty)).filter(_.size == 6) map {
-      line => {
-        val fields = line.toVector
-        Record(fields(0), fields(1), fields(2), fields(3), fields(4), fields(5))
-      }
-    }
-  }
+	private def parse[F <: FormatType: RowFormat]: RowParse = {
+		def toRecord(formatted: Option[List[String]]): Option[Record] =
+			formatted.map(_.filter(_.nonEmpty)).filter(_.size == 6) map {
+				line => {
+					val fields = line.toVector
+					Record(
+						name			= fields(0),
+						address		= fields(1),
+						postcode	= fields(2),
+						phone			= fields(3),
+						limit			= fields(4),
+						birthday 	= fields(5))
+				}
+			}
+
+		RowFormat[F].format _ andThen toRecord
+	}
 }
