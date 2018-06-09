@@ -28,11 +28,7 @@ object CreditLimit {
 		}
 	}
 
-
-  val csvParser = new CSVParser(new DefaultCSVFormat {})
-  val tsvParser = new CSVParser(new TSVFormat {})
-
-  case class Record(
+  final case class Record(
       name: String,
       address: String,
       postcode: String,
