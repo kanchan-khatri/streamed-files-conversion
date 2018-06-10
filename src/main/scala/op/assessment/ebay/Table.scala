@@ -3,6 +3,7 @@ package op.assessment.ebay
 import op.assessment.ebay.CreditLimit.Record
 
 trait Table {
+
   def tableHeader: String
   def tableFooter: String
   def tableRow(record: Record): String
