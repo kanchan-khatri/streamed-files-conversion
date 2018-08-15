@@ -8,8 +8,7 @@ object CreditLimit {
 			postcode: String,
 			phone: String,
 			limit: String,
-			birthday: String
-		)
+			birthday: String)
 
 	type RowParse = String => Option[Record]
 

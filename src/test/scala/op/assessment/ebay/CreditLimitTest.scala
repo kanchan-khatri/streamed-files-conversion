@@ -51,7 +51,7 @@ class CreditLimitTest extends FunSuite {
 
     assert(
       workBookParse("input.prn") {
-				"""Johnson, John	Voorstraat 32		020 3849381		1000000	19870101"""
+        """Johnson, John	Voorstraat 32		020 3849381		1000000	19870101"""
       } === None)
 
     assert(

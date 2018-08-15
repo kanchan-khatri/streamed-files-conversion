@@ -7,7 +7,6 @@ trait CsvType extends FormatType
 trait TsvType extends FormatType
 
 trait RowFormat[F <: FormatType] {
-
   def parser: CSVParser
   def format(row: String): Option[List[String]] = parser.parseLine(row)
 }

@@ -6,11 +6,11 @@ import fs2.{Stream, io, text}
 import op.assessment.ebay.CreditLimit._
 import scala.language.higherKinds
 
-trait TablesConversion  extends Table {
+trait TablesConversion extends Table {
 
   def converter[F[_]](
-			sources :Seq[String],
-			out: Path)(implicit F: Sync[F]): F[Unit] = {
+      sources: Seq[String],
+      out: Path)(implicit F: Sync[F]): F[Unit] = {
 
     val header: Stream[F, String] =
       Stream.emit(tableHeader).intersperse("\n")
