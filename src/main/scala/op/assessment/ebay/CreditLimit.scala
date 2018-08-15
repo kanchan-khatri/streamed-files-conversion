@@ -13,6 +13,11 @@ object CreditLimit {
 
   type RowParse = String => Option[Record]
 
+	/**
+		* Try to determine a type of a workbook and get corresponding parser.
+		* @param path path to workbook.
+		* @return parse function for a type determined
+		*/
   def workBookParse(path: String): RowParse = path match {
     case csv if csv.endsWith(".csv") => parse[CsvType]
     case prn if prn.endsWith(".prn") => parse[TsvType]
