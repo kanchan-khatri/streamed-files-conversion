@@ -6,9 +6,9 @@ class CreditLimitTest extends FunSuite {
 
   import CreditLimit._
 
-  test("CsvRow") {
+  test("Csv") {
     assert(
-      rowParse(RowType("input.csv")) {
+      workBookParse("input.csv") {
         """"Gibson, Mal",Vredenburg 21,3209 DD,06-48958986,54.5,09/11/1978"""
       } === Some(
         Record(
@@ -20,24 +20,24 @@ class CreditLimitTest extends FunSuite {
           birthday = "09/11/1978")))
 
     assert(
-      rowParse(RowType("input.ccc")) {
+      workBookParse("input.ccc") {
         """"Gibson, Mal",Vredenburg 21,3209 DD,06-48958986,54.5,09/11/1978"""
       } === None)
 
     assert(
-      rowParse(RowType("input.csv")) {
+      workBookParse("input.csv") {
         """"Gibson, Mal",3209 DD,06-48958986,54.5,09/11/1978"""
       } === None)
 
     assert(
-      rowParse(RowType("input.csv")) {
+      workBookParse("input.csv") {
         """"***sadfvdfv!!!"""
       } === None)
   }
 
-  test("RrnRow") {
+  test("Rrn") {
     assert(
-      rowParse(RowType("input.prn")) {
+      workBookParse("input.prn") {
         """Johnson, John	Voorstraat 32		3122gg		020 3849381		1000000	19870101"""
       } === Some(
         Record(
@@ -50,12 +50,12 @@ class CreditLimitTest extends FunSuite {
 
 
     assert(
-      rowParse(RowType("input.prn")) {
+      workBookParse("input.prn") {
 				"""Johnson, John	Voorstraat 32		020 3849381		1000000	19870101"""
       } === None)
 
     assert(
-      rowParse(RowType("input.prn")) {
+      workBookParse("input.prn") {
         """"***sadfvdfv!!!"""
       } === None)
   }

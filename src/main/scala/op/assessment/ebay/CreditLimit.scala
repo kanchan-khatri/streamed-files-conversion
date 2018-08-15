@@ -11,26 +11,12 @@ object CreditLimit {
       birthday: String
     )
 
-  object RowType {
-
-    def apply(path: String): RowType = path match {
-      case csv if csv.endsWith(".csv") => CsvRow
-      case prn if prn.endsWith(".prn") => PrnRow
-      case _ => IllegalRow
-    }
-  }
-
-  sealed trait RowType
-  case object CsvRow extends RowType
-  case object PrnRow extends RowType
-  case object IllegalRow extends RowType
-
   type RowParse = String => Option[Record]
 
-  def rowParse(rt: RowType): RowParse = rt match {
-    case CsvRow => parse[CsvType]
-    case PrnRow => parse[TsvType]
-    case IllegalRow => _ => None
+  def workBookParse(path: String): RowParse = path match {
+    case csv if csv.endsWith(".csv") => parse[CsvType]
+    case prn if prn.endsWith(".prn") => parse[TsvType]
+    case _ => _ => None
   }
 
 	private def parse[F <: FormatType: RowFormat]: RowParse = {

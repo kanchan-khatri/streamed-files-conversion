@@ -16,7 +16,7 @@ trait TablesConversion  extends Table {
       Stream.emit(tableHeader).intersperse("\n")
 
     def table(source: String): Stream[F, String] = {
-      val parse = rowParse(RowType(source))
+      val parse = workBookParse(source)
       io.file.readAll[F](Paths.get(source), chunkSize = 4096)
         .through(text.utf8Decode)
         .through(text.lines)
